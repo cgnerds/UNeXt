@@ -15,29 +15,21 @@ UNet and its latest extensions like TransUNet have been the leading medical imag
 
 ## Using the code:
 
-The code is stable while using Python 3.6.13, CUDA >=10.1
+The code is stable while using Python 3.10.13, CUDA >=12.1
 
 - Clone this repository:
 ```bash
-git clone https://github.com/jeya-maria-jose/UNeXt-pytorch
+git clone https://github.com/cgnerds/UNeXt-pytorch
 cd UNeXt-pytorch
 ```
 
 To install all the dependencies using conda:
 
 ```bash
-conda env create -f environment.yml
+conda create -n unext python=3.10 -y
 conda activate unext
-```
-
-If you prefer pip, install following versions:
-
-```bash
-timm==0.3.2
-mmcv-full==1.2.7
-torch==1.7.1
-torchvision==0.8.2
-opencv-python==4.5.1.48
+conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+pip install -r requirements.txt
 ```
 
 ## Datasets
@@ -78,10 +70,12 @@ For binary segmentation problems, just use folder 0.
 
 1. Train the model.
 ```
+# <dataset name> - wrist, <exp name> - wrist
 python train.py --dataset <dataset name> --arch UNext --name <exp name> --img_ext .png --mask_ext .png --lr 0.0001 --epochs 500 --input_w 512 --input_h 512 --b 8
 ```
 2. Evaluate.
 ```
+# <exp name> - wrist
 python val.py --name <exp name>
 ```
 

@@ -1,0 +1,7 @@
+timm
+torch
+torchvision
+opencv-python
+pandas
+albumentations
+matplotlib
