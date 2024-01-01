@@ -24,7 +24,7 @@ import numpy as np
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default='wrist', help='model name')
-    parser.add_argument('--video', default='inputs/video.mp4', help='video name')
+    parser.add_argument('--video', default='inputs/output.mp4', help='video name')
     args = parser.parse_args()
     return args
 
@@ -86,16 +86,12 @@ def main():
             output = torch.sigmoid(output).cpu().numpy()
             output[output>=0.5]=1
             output[output<0.5]=0
-            
-            temp = (img[0]*255).numpy().transpose(1, 2, 0)
-            cv2.imwrite(os.path.join('masks', config['name'], str(c), str(img_index) + '.jpg'), temp)
-            
-            
+                 
             # print(f"after inference:{output.shape}")
 
-            # for c in range(config['num_classes']):
-            #     cv2.imwrite(os.path.join('outputs', config['name'], str(c), str(img_index) + '.jpg'),
-            #                     (output[0, c] * 255).astype('uint8'))
+            for c in range(config['num_classes']):
+                cv2.imwrite(os.path.join('outputs', config['name'], str(c), str(img_index) + '.jpg'),
+                                (output[0, c] * 255).astype('uint8'))
             #     # mask image
             #     out_mask = (output[0, c] * 255).astype('uint8')
             #     print(f"mask shape:{out_mask.shape}")
