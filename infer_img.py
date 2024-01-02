@@ -2,6 +2,7 @@ import os
 import cv2
 import yaml
 import torch
+import datetime
 import argparse
 import numpy as np
 import albumentations as A
@@ -52,6 +53,7 @@ def main():
     cap = cv2.VideoCapture(args.video)
     img_index = 0
     success = True
+    starttime = datetime.datetime.now()
     while success:
         success, frame = cap.read()
         if not success:
@@ -89,7 +91,9 @@ def main():
             img_index += 1
 
     torch.cuda.empty_cache()
-
+    
+    endtime = datetime.datetime.now()
+    print(f'infer {img_index} images in {(endtime-starttime).seconds} seconds.')
 
 if __name__ == '__main__':
     main()
