@@ -14,7 +14,7 @@ import archs
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default='wrist', help='model name')
-    parser.add_argument('--video', default='inputs/output.mp4', help='video name')
+    parser.add_argument('--video', default='inputs/video.mp4', help='video name')
     args = parser.parse_args()
     return args
 
@@ -59,6 +59,9 @@ def main():
         if not success:
             break
         
+        # image shape
+        img_h, img_w, _ = frame.shape
+        
         # preprocess img-[1,3,512,512]
         img = infer_transform(image=frame)['image']
         img = img.astype('float32') / 255
@@ -82,7 +85,8 @@ def main():
             cv2.imwrite(mask_name, mask_img)
             # save image with mask
             ret_name = os.path.join('outputs', config['name'], str(0), str(img_index) + '.jpg')
-            ret_img = cv2.resize(frame, dsize=(config['input_h'], config['input_w']))
+            ret_img = frame.copy()
+            mask_img = cv2.resize(mask_img, dsize=(img_w, img_h))
             color = np.array([0,255,0], dtype='uint8')
             masked_img = np.where(mask_img[...,None], color, ret_img)
             ret_img = cv2.addWeighted(ret_img, 0.7, masked_img, 0.3, 0)
