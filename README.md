@@ -19,8 +19,8 @@ The code is stable while using Python 3.10.13, CUDA >=12.1
 
 - Clone this repository:
 ```bash
-git clone https://github.com/cgnerds/UNeXt-pytorch
-cd UNeXt-pytorch
+git clone https://github.com/cgnerds/UNeXt
+cd UNeXt
 ```
 
 To install all the dependencies using conda:
