@@ -14,7 +14,7 @@ import archs
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default='wrist', help='model name')
-    parser.add_argument('--video', default='inputs/video.mp4', help='video name')
+    parser.add_argument('--video', default='inputs/output.mp4', help='video name')
     args = parser.parse_args()
     return args
 
