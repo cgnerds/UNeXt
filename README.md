@@ -71,6 +71,7 @@ For binary segmentation problems, just use folder 0.
 1. Train the model.
 ```
 # python train.py --dataset wrist --arch UNext --name wrist --img_ext .jpg --mask_ext .jpg --lr 0.0001 --epochs 500 --input_w 512 --input_h 512 --b 8  
+# python train.py --dataset wrist_pku --arch UNext --name wrist_pku --img_ext .png --mask_ext .png --lr 0.0001 --epochs 00 --input_w 512 --input_h 512 --b 8
 python train.py --dataset <dataset name> --arch UNext --name <exp name> --img_ext .png --mask_ext .png --lr 0.0001 --epochs 500 --input_w 512 --input_h 512 --b 8
 ```
 2. Evaluate.
