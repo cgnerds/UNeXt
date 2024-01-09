@@ -93,7 +93,7 @@ def parse_args():
                         metavar='N', help='early stopping (default: -1)')
     parser.add_argument('--cfg', type=str, metavar="FILE", help='path to config file', )
 
-    parser.add_argument('--num_workers', default=4, type=int)
+    parser.add_argument('--num_workers', default=16, type=int)
 
     config = parser.parse_args()
 
