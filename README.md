@@ -80,6 +80,11 @@ python train.py --dataset <dataset name> --arch UNext --name <exp name> --img_ex
 python val.py --name <exp name>
 ```
 
+3. Inference.
+```
+python inference.py
+```
+
 ### Acknowledgements:
 
 This code-base uses certain code-blocks and helper functions from [UNet++](https://github.com/4uiiurz1/pytorch-nested-unet), [Segformer](https://github.com/NVlabs/SegFormer), and [AS-MLP](https://github.com/svip-lab/AS-MLP). Naming credits to [Poojan](https://scholar.google.co.in/citations?user=9dhBHuAAAAAJ&hl=en).
