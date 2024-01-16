@@ -28,7 +28,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    with open('models/%s/config.yml' % args.name, 'r') as f:
+    with open('models/%s/config.yml' % args.model, 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
     print('-'*20)
@@ -43,10 +43,14 @@ def main():
     model = model.cuda()
 
     # Data loading code
-    img_ids = glob(os.path.join('inputs', config['dataset'], 'images', '*' + config['img_ext']))
+    img_ids = glob(os.path.join('inputs', args.folder, 'images', '*' + config['img_ext']))
+    print(img_ids)
     img_ids = [os.path.splitext(os.path.basename(p))[0] for p in img_ids]
+    print(img_ids)
+    val_img_ids = img_ids
+    print(val_img_ids)
 
-    _, val_img_ids = train_test_split(img_ids, test_size=0.2, random_state=41)
+    # _, val_img_ids = train_test_split(img_ids, test_size=0.2, random_state=41)
 
     model.load_state_dict(torch.load('models/%s/model.pth' % config['name']))
     model.eval()
@@ -58,8 +62,8 @@ def main():
 
     val_dataset = Dataset(
         img_ids=val_img_ids,
-        img_dir=os.path.join('inputs', config['dataset'], 'images'),
-        mask_dir=os.path.join('inputs', config['dataset'], 'masks'),
+        img_dir=os.path.join('inputs', args.folder, 'images'),
+        mask_dir=os.path.join('inputs', args.folder, 'masks'),
         img_ext=config['img_ext'],
         mask_ext=config['mask_ext'],
         num_classes=config['num_classes'],
@@ -98,7 +102,7 @@ def main():
 
             for i in range(len(output)):
                 for c in range(config['num_classes']):
-                    cv2.imwrite(os.path.join('outputs', config['name'], str(c), meta['img_id'][i] + '.jpg'),
+                    cv2.imwrite(os.path.join('outputs', args.folder, str(c), meta['img_id'][i] + '.jpg'),
                                 (output[i, c] * 255).astype('uint8'))
 
     print('IoU: %.4f' % iou_avg_meter.avg)
