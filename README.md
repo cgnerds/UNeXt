@@ -28,7 +28,7 @@ To install all the dependencies using conda:
 ```bash
 conda create -n unext python=3.10 -y
 conda activate unext
-conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 pip install -r requirements.txt
 ```
 
