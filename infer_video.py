@@ -16,8 +16,8 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default='wrist', help='model name')
     parser.add_argument('--camid', default=0, help='camera id')
-    parser.add_argument('--video', default='inputs/output.mp4', help='video name')
-    parser.add_argument('--output', default='/home/med/DEV/USImgs', help='output dir')
+    parser.add_argument('--video', default='', help='video name')
+    parser.add_argument('--output', default='outputs', help='output dir')
     args = parser.parse_args()
     return args
 
@@ -55,7 +55,10 @@ def main():
     
     # open camera or video file 
     cap = cv2.VideoCapture()
-    flag = cap.open(args.camid)
+    if args.video != '':
+        flag = cap.open(args.video)
+    else:
+        flag = cap.open(args.camid)
     if flag == False:
         print('open video failed')
         return
