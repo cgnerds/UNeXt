@@ -4,3 +4,6 @@ pandas
 albumentations
 matplotlib
 pyinstaller
+# deploy
+onnx
+onnxruntime

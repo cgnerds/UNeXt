@@ -30,6 +30,10 @@ conda create -n unext python=3.10 -y
 conda activate unext
 conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 pip install -r requirements.txt
+
+# WSL Only
+# export QT_QPA_PLATFORM="xcb"
+# sudo apt install libqt5x11extras5 libxcb-xinerama0
 ```
 
 ## Datasets
