@@ -16,7 +16,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default='wrist', help='model name')
     parser.add_argument('--camid', default=0, help='camera id')
-    parser.add_argument('--video', default='', help='video name')
+    parser.add_argument('--video', default='inputs/test.mp4', help='video name')
     parser.add_argument('--output', default='outputs', help='output dir')
     args = parser.parse_args()
     return args
@@ -63,8 +63,9 @@ def main():
         print('open video failed')
         return
     # set camera resolution
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+    if args.video == '':
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
     # create folder to save original images
     time_now = time.strftime("%Y%m%d-%H%M", time.localtime())
     out_folder = os.path.join(args.output, time_now)
@@ -101,23 +102,31 @@ def main():
             output[output<0.5]=0
             
             # TODO multi-class
-            # save mask (0) - (512, 512)
-            mask_name = os.path.join('masks', config['name'], str(0), str(img_index) + '.jpg')
-            mask_img = (output[0, c] * 255).astype('uint8')
-            cv2.imwrite(mask_name, mask_img)
-            # save image with mask
-            ret_name = os.path.join('outputs', config['name'], str(0), str(img_index) + '.jpg')
-            ret_img = frame.copy()
-            mask_img = cv2.resize(mask_img, dsize=(img_w, img_h))
-            color = np.array([0,255,0], dtype='uint8')
-            masked_img = np.where(mask_img[...,None], color, ret_img)
-            ret_img = cv2.addWeighted(ret_img, 0.7, masked_img, 0.3, 0)
-            # cv2.imwrite(ret_name, ret_img)
+            for i in range(len(output)):
+                for c in range(config['num_classes']):
+                    cv2.imwrite(os.path.join('masks', config['name'], str(c), str(img_index) + '.png'),
+                                (output[i, c] * 255).astype('uint8'))
+            # for i in range(len(output)):
+            #     for c in range(config['num_classes']):
+            #         cv2.imwrite(os.path.join('outputs', config['name'], str(c), '{:06d}.jpg'.format(img_index)),
+            #                     (output[i, c] * 255).astype('uint8'))
+            # # save mask (0) - (512, 512)
+            # mask_name = os.path.join('masks', config['name'], str(0), str(img_index) + '.jpg')
+            # mask_img = (output[0, c] * 255).astype('uint8')
+            # cv2.imwrite(mask_name, mask_img)
+            # # save image with mask
+            # ret_name = os.path.join('outputs', config['name'], str(0), str(img_index) + '.jpg')
+            # ret_img = frame.copy()
+            # mask_img = cv2.resize(mask_img, dsize=(img_w, img_h))
+            # color = np.array([0,255,0], dtype='uint8')
+            # masked_img = np.where(mask_img[...,None], color, ret_img)
+            # ret_img = cv2.addWeighted(ret_img, 0.7, masked_img, 0.3, 0)
+            # # cv2.imwrite(ret_name, ret_img)
             
             img_index += 1
             
             # display the resulting frame 
-            cv2.imshow('ret_img', ret_img) 
+            # cv2.imshow('ret_img', ret_img) 
         
             # the 'q' button is set as the quitting button
             if cv2.waitKey(1) & 0xFF == ord('q'): 

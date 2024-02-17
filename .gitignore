@@ -163,3 +163,4 @@ outputs/
 models/
 masks/
 *.onnx
+*mp4
