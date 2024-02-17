@@ -22,6 +22,20 @@ def parse_args():
     return args
 
 def main():
+    
+    # 每个类别的 BGR 配色
+    palette = [
+        ['background', [127,127,127]],
+        ['red', [0,0,200]],
+        ['green', [0,200,0]],
+        ['white', [144,238,144]],
+        ['seed-black', [30,30,30]],
+        ['seed-white', [8,189,251]]
+    ]
+    palette_dict = {}
+    for idx, each in enumerate(palette):
+        palette_dict[idx] = each[1]
+    
     args = parse_args()
 
     with open('models/%s/config.yml' % args.model, 'r') as f:
@@ -49,9 +63,17 @@ def main():
         A.Normalize(),
     ])
     
+    # create folder to save original images
+    time_now = time.strftime("%Y%m%d-%H%M", time.localtime())
+    image_folder = os.path.join(args.output, time_now, 'images')
+    masks_folder = os.path.join(args.output, time_now, 'masks')
+    if not os.path.exists(image_folder):
+        os.makedirs(image_folder)
+    if not os.path.exists(masks_folder):
+        os.makedirs(masks_folder)
+        
     for c in range(config['num_classes']):
-        os.makedirs(os.path.join('outputs', config['name'], str(c)), exist_ok=True)
-        os.makedirs(os.path.join('masks', config['name'], str(c)), exist_ok=True)
+        os.makedirs(os.path.join(masks_folder, config['name'], str(c)), exist_ok=True)
     
     # open camera or video file 
     cap = cv2.VideoCapture()
@@ -66,11 +88,7 @@ def main():
     if args.video == '':
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
-    # create folder to save original images
-    time_now = time.strftime("%Y%m%d-%H%M", time.localtime())
-    out_folder = os.path.join(args.output, time_now)
-    if not os.path.exists(out_folder):
-        os.makedirs(out_folder)
+
     img_index = 0
     starttime = datetime.datetime.now()
     while (True):
@@ -79,7 +97,7 @@ def main():
             break
         
         # save original images
-        img_file = os.path.join(out_folder, '{:06d}.jpg'.format(img_index))
+        img_file = os.path.join(image_folder, '{:06d}.jpg'.format(img_index))
         cv2.imwrite(img_file, frame)
         
         # image shape
@@ -103,31 +121,27 @@ def main():
             
             # TODO multi-class
             for i in range(len(output)):
+                viz_mask_bgr = np.zeros((512, 512, 3))
                 for c in range(config['num_classes']):
-                    cv2.imwrite(os.path.join('masks', config['name'], str(c), str(img_index) + '.png'),
+                    viz_mask_bgr[np.where(output[i, c]>0)] = palette_dict[c]
+                    # save specific class mask
+                    cv2.imwrite(os.path.join(masks_folder, config['name'], str(c), '{:06d}.jpg'.format(img_index)),
                                 (output[i, c] * 255).astype('uint8'))
-            # for i in range(len(output)):
-            #     for c in range(config['num_classes']):
-            #         cv2.imwrite(os.path.join('outputs', config['name'], str(c), '{:06d}.jpg'.format(img_index)),
-            #                     (output[i, c] * 255).astype('uint8'))
-            # # save mask (0) - (512, 512)
-            # mask_name = os.path.join('masks', config['name'], str(0), str(img_index) + '.jpg')
-            # mask_img = (output[0, c] * 255).astype('uint8')
-            # cv2.imwrite(mask_name, mask_img)
-            # # save image with mask
-            # ret_name = os.path.join('outputs', config['name'], str(0), str(img_index) + '.jpg')
-            # ret_img = frame.copy()
-            # mask_img = cv2.resize(mask_img, dsize=(img_w, img_h))
-            # color = np.array([0,255,0], dtype='uint8')
-            # masked_img = np.where(mask_img[...,None], color, ret_img)
-            # ret_img = cv2.addWeighted(ret_img, 0.7, masked_img, 0.3, 0)
-            # # cv2.imwrite(ret_name, ret_img)
-            
+                opacity = 0.2 # 透明度越大，可视化效果越接近原图
+                ret_img = frame.copy()
+                viz_mask_bgr = viz_mask_bgr.astype('uint8')
+                viz_mask_bgr = cv2.resize(viz_mask_bgr, dsize=(img_w, img_h))
+                ret_img = cv2.addWeighted(ret_img, opacity, viz_mask_bgr, 1-opacity, 0)
+
+                # save image with mask
+                ret_name = os.path.join(masks_folder, config['name'], str(img_index) + '.jpg')
+                cv2.imwrite(ret_name, ret_img)
+                
+                # display image with mask
+                cv2.imshow('ret_img', ret_img)
+
             img_index += 1
             
-            # display the resulting frame 
-            # cv2.imshow('ret_img', ret_img) 
-        
             # the 'q' button is set as the quitting button
             if cv2.waitKey(1) & 0xFF == ord('q'): 
                 break
