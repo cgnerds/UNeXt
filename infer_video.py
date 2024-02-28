@@ -16,7 +16,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default='wrist', help='model name')
     parser.add_argument('--camid', default=0, help='camera id')
-    parser.add_argument('--video', default='inputs/test.mp4', help='video name')
+    parser.add_argument('--video', default='', help='video name')
     parser.add_argument('--output', default='outputs', help='output dir')
     args = parser.parse_args()
     return args
@@ -25,7 +25,7 @@ def main():
     
     # 每个类别的 BGR 配色
     palette = [
-        ['background', [127,127,127]],
+        ['background', [0,0,255]],
         ['red', [0,0,200]],
         ['green', [0,200,0]],
         ['white', [144,238,144]],
@@ -127,7 +127,7 @@ def main():
                     # save specific class mask
                     cv2.imwrite(os.path.join(masks_folder, config['name'], str(c), '{:06d}.jpg'.format(img_index)),
                                 (output[i, c] * 255).astype('uint8'))
-                opacity = 0.2 # 透明度越大，可视化效果越接近原图
+                opacity = 0.8 # 透明度越大，可视化效果越接近原图
                 ret_img = frame.copy()
                 viz_mask_bgr = viz_mask_bgr.astype('uint8')
                 viz_mask_bgr = cv2.resize(viz_mask_bgr, dsize=(img_w, img_h))

@@ -43,7 +43,7 @@ def parse_args():
     parser.add_argument('--deep_supervision', default=False, type=str2bool)
     parser.add_argument('--input_channels', default=3, type=int,
                         help='input channels')
-    parser.add_argument('--num_classes', default=3, type=int,
+    parser.add_argument('--num_classes', default=1, type=int,
                         help='number of classes')
     parser.add_argument('--input_w', default=256, type=int,
                         help='image width')
@@ -65,7 +65,7 @@ def parse_args():
     parser.add_argument('--mask_ext', default='.png',
                         help='mask file extension')
 
-    # optimizer
+    # optimizerc
     parser.add_argument('--optimizer', default='Adam',
                         choices=['Adam', 'SGD'],
                         help='loss: ' +
@@ -93,7 +93,7 @@ def parse_args():
                         metavar='N', help='early stopping (default: -1)')
     parser.add_argument('--cfg', type=str, metavar="FILE", help='path to config file', )
 
-    parser.add_argument('--num_workers', default=16, type=int)
+    parser.add_argument('--num_workers', default=32, type=int)
 
     config = parser.parse_args()
 
