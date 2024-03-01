@@ -43,7 +43,7 @@ def parse_args():
     parser.add_argument('--deep_supervision', default=False, type=str2bool)
     parser.add_argument('--input_channels', default=3, type=int,
                         help='input channels')
-    parser.add_argument('--num_classes', default=1, type=int,
+    parser.add_argument('--num_classes', default=17, type=int,
                         help='number of classes')
     parser.add_argument('--input_w', default=256, type=int,
                         help='image width')
